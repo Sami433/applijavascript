@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plats Populaires et Commande</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        @font-face {
+            font-family: "hHachimaki";
+            src: url('hHachimaki.ttf');
+        }
+
+        body { 
+            font-family: Arial, sans-serif;
+            background-image: url('fond.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+        }
+
+        h1 {
+            font-family: hHachimaki;
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        #data {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .country {
+            margin: 10px;
+            cursor: pointer;
+            color: blue;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        .order-summary {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        .address-box {
+            margin: 20px 0;
+        }
+    </style>
+    <script>
+        const platsPopulaires = {
+            'chine': [
+                '1. Canard laqué',
+                '2. Raviolis',
+                '3. Soupe de nouilles',
+                '4. Boulettes de viande',
+                '5. Peking Duck',
+                '6. Porc aigre-doux',
+                '7. Tofu mapo',
+                '8. Riz frit',
+                '9. Bœuf sauté',
+                '10. Crêpes de sarrasin',
+            ],
+            'etats_unis': [
+                '1. Hamburger',
+                '2. Hot-dog',
+                '3. Barbecue',
+                '4. Pizzas',
+                '5. Tacos',
+                '6. Mac and cheese',
+                '7. Donuts',
+                '8. Cheesecake',
+                '9. Buffalo wings',
+                '10. Clam chowder',
+            ],
+            'japon': [
+                '1. Sushi',
+                '2. Ramen',
+                '3. Tempura',
+                '4. Okonomiyaki',
+                '5. Sashimi',
+                '6. Udon',
+                '7. Takoyaki',
+                '8. Miso soup',
+                '9. Tonkatsu',
+                '10. Onigiri',
+            ],
+            'italie': [
+                '1. Pizza',
+                '2. Pasta',
+                '3. Risotto',
+                '4. Lasagne',
+                '5. Tiramisu',
+                '6. Polenta',
+                '7. Gnocchi',
+                '8. Caprese salad',
+                '9. Frittata',
+                '10. Panna cotta',
+            ],
+            'inde': [
+                '1. Biryani',
+                '2. Curry de poulet',
+                '3. Samosas',
+                '4. Daal',
+                '5. Butter chicken',
+                '6. Paneer tikka',
+                '7. Pani puri',
+                '8. Chaat',
+                '9. Idli',
+                '10. Jalebi',
+            ],
+            'mexique': [
+                '1. Tacos',
+                '2. Enchiladas',
+                '3. Guacamole',
+                '4. Chiles en nogada',
+                '5. Tamales',
+                '6. Quesadillas',
+                '7. Mole',
+                '8. Ceviche',
+                '9. Pozole',
+                '10. Flan',
+            ],
+        };
+
+        let commande = [];
+
+        function afficherPlats(pays) {
+            const plats = platsPopulaires[pays] || [];
+            const listePlats = document.getElementById('plats-list');
+            const titre = document.getElementById('plats-titre');
+            listePlats.innerHTML = '';
+            titre.textContent = `10 plats populaires en ${pays.replace('_', ' ').toUpperCase()} :`;
+
+            plats.forEach((plat, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <input type="checkbox" id="plat${index}" value="${plat}">
+                    <label for="plat${index}">${plat}</label>
+                `;
+                listePlats.appendChild(li);
+            });
+        }
+
+        function validerCommande() {
+            const platsSelectionnes = document.querySelectorAll('input[type="checkbox"]:checked');
+            commande = Array.from(platsSelectionnes).map(input => input.value);
+
+            const adresse = document.getElementById('adresse').value;
+            if (!adresse) {
+                alert('Veuillez entrer votre adresse avant de confirmer la commande.');
+                return;
+            }
+
+            if (commande.length > 0) {
+                if (confirm('Êtes-vous sûr de vouloir confirmer votre commande ?')) {
+                    afficherCommande(adresse);
+                }
+            } else {
+                alert('Veuillez sélectionner au moins un plat.');
+            }
+        }
+
+        function afficherCommande(adresse) {
+            const resumeCommande = document.getElementById('commande-resume');
+            resumeCommande.innerHTML = `
+                <h2>Résumé de votre commande :</h2>
+                <ul>${commande.map(plat => `<li>${plat}</li>`).join('')}</ul>
+                <p>Adresse de livraison : ${adresse}</p>
+            `;
+        }
+    </script>
+</head>
+<body>
+    <h1>DRONE-FOOD</h1>
+
+    <div id="data">
+        <a class="country" href="#" onclick="afficherPlats('chine')">Chine</a> |
+        <a class="country" href="#" onclick="afficherPlats('etats_unis')">États-Unis</a> |
+        <a class="country" href="#" onclick="afficherPlats('japon')">Japon</a> |
+        <a class="country" href="#" onclick="afficherPlats('italie')">Italie</a> |
+        <a class="country" href="#" onclick="afficherPlats('inde')">Inde</a> |
+        <a class="country" href="#" onclick="afficherPlats('mexique')">Mexique</a>
+    </div>
+
+    <div class="content-wrapper">
+        <h2 id="plats-titre"></h2>
+        <ul id="plats-list"></ul>
+        
+        <div class="address-box">
+            <label for="adresse">Entrez votre adresse de livraison :</label>
+            <input type="text" id="adresse" placeholder="Votre adresse">
+        </div>
+
+        <button onclick="validerCommande()">Commander</button>
+        
+        <div id="commande-resume" class="order-summary"></div>
+    </div>
+</body>
+</html>
